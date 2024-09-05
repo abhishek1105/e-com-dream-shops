@@ -22,7 +22,9 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cart Not Found"));
         BigDecimal totalAmount = cart.getTotalAmount();
         cart.setTotalAmount(totalAmount);
+        System.out.println("hllo");
         return cartRepo.save(cart);
+
 
     }
 
@@ -40,6 +42,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCart(id);
         return cart.getTotalAmount();
     }
+
     @Override
     public Long initializeNewCart() {
         Cart newCart = new Cart();
