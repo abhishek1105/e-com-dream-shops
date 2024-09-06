@@ -4,6 +4,7 @@ import com.freeCodeCamp.dream_shops.exceptions.ResourceNotFoundException;
 import com.freeCodeCamp.dream_shops.model.Cart;
 import com.freeCodeCamp.dream_shops.repo.CartItemRepo;
 import com.freeCodeCamp.dream_shops.repo.CartRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +23,14 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cart Not Found"));
         BigDecimal totalAmount = cart.getTotalAmount();
         cart.setTotalAmount(totalAmount);
-        System.out.println("hllo");
+        System.out.println("hello");
         return cartRepo.save(cart);
 
 
     }
 
     @Override
+    @Transactional
     public void clearCart(Long id) {
         Cart cart = getCart(id);
         cartItemRepo.deleteAllByCartId(id);
