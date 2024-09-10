@@ -25,8 +25,6 @@ public class CartServiceImpl implements CartService {
         cart.setTotalAmount(totalAmount);
         System.out.println("hello");
         return cartRepo.save(cart);
-
-
     }
 
     @Override
@@ -52,6 +50,11 @@ public class CartServiceImpl implements CartService {
         newCart.setId(newCartId);
         return cartRepo.save(newCart).getId();
 
+    }
+
+    @Override
+    public Cart getCartByUserId(Long userId) {
+        return cartRepo.findByUserId(userId);
     }
 
 

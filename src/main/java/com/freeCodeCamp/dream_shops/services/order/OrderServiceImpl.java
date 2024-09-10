@@ -31,14 +31,21 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> orderItemList = createOrderItems(order, cart);
         order.setOrderItems(new HashSet<>(orderItemList));
         order.setOrderTotalAmount(cart.getTotalAmount());
-        Order save = orderRepo.save(order);
+        Order savedOrder = orderRepo.save(order);
         cartService.clearCart(cart.getId());
-        return save;
+        return savedOrder;
     }
 
     @Override
     public Order getOrder(Long orderId) {
         return orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Cant find any Order"));
+    }
+
+    @Override
+    public List<Order> getUserOrders(Long userId) {
+
+        return orderRepo.findByUserId(userId);
+
     }
 
     private Order createOrder(Cart cart) {
