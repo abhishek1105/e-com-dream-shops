@@ -1,5 +1,6 @@
 package com.freeCodeCamp.dream_shops.services.order;
 
+import com.freeCodeCamp.dream_shops.dto.OrderDto;
 import com.freeCodeCamp.dream_shops.enums.OrderStatus;
 import com.freeCodeCamp.dream_shops.exceptions.ResourceNotFoundException;
 import com.freeCodeCamp.dream_shops.model.Cart;
@@ -10,6 +11,7 @@ import com.freeCodeCamp.dream_shops.repo.OrderRepo;
 import com.freeCodeCamp.dream_shops.repo.ProductRepo;
 import com.freeCodeCamp.dream_shops.services.cart.CartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -37,14 +40,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrder(Long orderId) {
-        return orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Cant find any Order"));
+    public OrderDto getOrder(Long orderId) {
+        return orderRepo.findById(orderId).map(this::convertToDto).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId) {
-
-        return orderRepo.findByUserId(userId);
+    public List<OrderDto> getUserOrders(Long userId) {
+        List<Order> orders = orderRepo.findByUserId(userId);
+        return orders.stream().map(this::convertToDto).toList();
 
     }
 
@@ -68,5 +71,9 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
         return orderItems.stream().map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add);
 
+    }
+
+    private OrderDto convertToDto(Order order) {
+        return modelMapper.map(order, OrderDto.class);
     }
 }

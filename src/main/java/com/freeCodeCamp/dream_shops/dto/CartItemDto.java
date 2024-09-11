@@ -1,7 +1,9 @@
 package com.freeCodeCamp.dream_shops.dto;
 
-import java.math.BigDecimal;
+import lombok.Data;
 
+import java.math.BigDecimal;
+@Data
 public class CartItemDto {
     private Long itemId;
     private Integer quantity;
