@@ -1,5 +1,6 @@
 package com.freeCodeCamp.dream_shops.services.user;
 
+import com.freeCodeCamp.dream_shops.dto.UserDto;
 import com.freeCodeCamp.dream_shops.exceptions.AlreadyExistsException;
 import com.freeCodeCamp.dream_shops.exceptions.ResourceNotFoundException;
 import com.freeCodeCamp.dream_shops.model.User;
@@ -7,6 +8,7 @@ import com.freeCodeCamp.dream_shops.repo.UserRepo;
 import com.freeCodeCamp.dream_shops.request.CreateUserRequest;
 import com.freeCodeCamp.dream_shops.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) {
@@ -49,5 +52,10 @@ public class UserServiceImpl implements UserService {
         userRepo.findById(userId).ifPresentOrElse(userRepo::delete, () -> {
             throw new ResourceNotFoundException("User not found hence cant delete");
         });
+    }
+
+    @Override
+    public UserDto convertUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }
