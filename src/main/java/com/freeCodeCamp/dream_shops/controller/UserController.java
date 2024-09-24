@@ -25,7 +25,8 @@ public class UserController {
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
             User user = userService.getUserById(userId);
-            return ResponseEntity.ok(new ApiResponse("User found", user));
+            UserDto userDto = userService.convertUserToDto(user);
+            return ResponseEntity.ok(new ApiResponse("User found", userDto));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("user cant found with '" + userId + "' id", e.getMessage()));
         }

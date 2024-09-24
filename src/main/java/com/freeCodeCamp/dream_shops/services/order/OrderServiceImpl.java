@@ -44,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepo.findById(orderId).map(this::convertToDto).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
     }
 
+
     @Override
     public List<OrderDto> getUserOrders(Long userId) {
         List<Order> orders = orderRepo.findByUserId(userId);
@@ -73,7 +74,8 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-    private OrderDto convertToDto(Order order) {
+    @Override
+    public OrderDto convertToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
     }
 }

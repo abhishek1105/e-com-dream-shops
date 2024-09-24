@@ -2,6 +2,7 @@ package com.freeCodeCamp.dream_shops.services.cart;
 
 import com.freeCodeCamp.dream_shops.exceptions.ResourceNotFoundException;
 import com.freeCodeCamp.dream_shops.model.Cart;
+import com.freeCodeCamp.dream_shops.model.User;
 import com.freeCodeCamp.dream_shops.repo.CartItemRepo;
 import com.freeCodeCamp.dream_shops.repo.CartRepo;
 import jakarta.transaction.Transactional;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -44,11 +46,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        Long newCartId = cartIdGenerator.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepo.save(newCart).getId();
+    public Cart initializeNewCart(User user) {
+        return Optional.ofNullable(getCartByUserId(user.getId())).orElseGet(() -> {
+            Cart cart = new Cart();
+            cart.setUser(user);
+            return cartRepo.save(cart);
+        });
 
     }
 
