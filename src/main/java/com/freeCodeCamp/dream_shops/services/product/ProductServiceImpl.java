@@ -2,6 +2,7 @@ package com.freeCodeCamp.dream_shops.services.product;
 
 import com.freeCodeCamp.dream_shops.dto.ImageDto;
 import com.freeCodeCamp.dream_shops.dto.ProductDto;
+import com.freeCodeCamp.dream_shops.exceptions.AlreadyExistsException;
 import com.freeCodeCamp.dream_shops.exceptions.ProductNotFoundException;
 import com.freeCodeCamp.dream_shops.model.Category;
 import com.freeCodeCamp.dream_shops.model.Image;
@@ -36,13 +37,20 @@ public class ProductServiceImpl implements ProductService {
         // If Yes, set it as the new product category
         // If No, the save it as a new category
         // The set as the new product category.
-
+        if (productExists(request.getName(), request.getBrand())) {
+            throw new AlreadyExistsException(request.getBrand() + " " + request.getName() + " " + "already exists, you may update this product instead");
+        }
         Category category = Optional.ofNullable(categoryRepo.findByName(request.getCategory().getName())).orElseGet(() -> {
             Category newCategory = new Category(request.getCategory().getName());
             return categoryRepo.save(newCategory);
         });
         request.setCategory(category);
         return productRepo.save(createProduct(request, category));
+    }
+
+
+    private boolean productExists(String name, String brand) {
+        return productRepo.existsByNameAndBrand(name, brand);
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
@@ -124,10 +132,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto convertToDto(Product product) {
         ProductDto productDto = modelMapper.map(product, ProductDto.class);
         List<Image> images = imageRepo.findByProductId(product.getId());
-        List<ImageDto> imageDtos = images.stream()
-                .map(image -> modelMapper
-                        .map(image, ImageDto.class))
-                .toList();
+        List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class)).toList();
         productDto.setImages(imageDtos);
         return productDto;
     }

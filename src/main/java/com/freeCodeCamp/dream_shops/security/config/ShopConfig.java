@@ -1,4 +1,4 @@
-package com.freeCodeCamp.dream_shops.config;
+package com.freeCodeCamp.dream_shops.security.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
