@@ -25,7 +25,14 @@ public class JwtUtils {
         ShopUserDetails userPrincipal = (ShopUserDetails) authentication.getPrincipal();
         List<String> roles = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        return Jwts.builder().setSubject(userPrincipal.getEmail()).claim("id", userPrincipal.getId()).claim("roles", roles).setIssuedAt(new Date()).setExpiration(new Date((new Date()).getTime() + expirationTime)).signWith(key(), SignatureAlgorithm.HS256).compact();
+        return Jwts.builder()
+                .setSubject(userPrincipal.getEmail())
+                .claim("id", userPrincipal.getId())
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date())
+                        .getTime() + expirationTime))
+                .signWith(key(), SignatureAlgorithm.HS256).compact();
     }
 
     private Key key() {

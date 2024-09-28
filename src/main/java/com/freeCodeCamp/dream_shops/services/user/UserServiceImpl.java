@@ -9,6 +9,9 @@ import com.freeCodeCamp.dream_shops.request.CreateUserRequest;
 import com.freeCodeCamp.dream_shops.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserById(Long userId) {
@@ -30,9 +34,8 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setFirstName(createRequest.getFirstName());
             user.setLastName(createRequest.getLastName());
-
             user.setEmail(createRequest.getEmail());
-            user.setPassword(createRequest.getPassword());
+            user.setPassword(passwordEncoder.encode(createRequest.getPassword()));
             return userRepo.save(user);
         }).orElseThrow(() -> new AlreadyExistsException("oops this " + createRequest.getEmail() + " Already Exists"));
     }
@@ -57,5 +60,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepo.findByEmail(email);
+
     }
 }
