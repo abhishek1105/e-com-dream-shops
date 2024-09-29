@@ -30,10 +30,6 @@ public class ProductController {
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
         return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
 
-//        or
-//        return ResponseEntity
-//        .ok(new ApiResponse("success", productService
-//        .getConvertedProducts(productService.getAllProducts())));
     }
 
     @GetMapping("product/{productId}/product")
