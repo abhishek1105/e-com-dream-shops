@@ -3,7 +3,6 @@ package com.freeCodeCamp.dream_shops.security.config;
 import com.freeCodeCamp.dream_shops.security.jwt.AuthTokenFilter;
 import com.freeCodeCamp.dream_shops.security.jwt.JwtAuthEntryPoint;
 import com.freeCodeCamp.dream_shops.security.user.ShopUserDetailsService;
-import org.springframework.lang.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class ShopConfig {
     private final ShopUserDetailsService shopUserDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
-    private static final List<String> SECURED_URLS = List.of("/api/v1/carts/**", "/api/v1/cartItems/**");
+    private static final List<String> SECURED_URLS = List.of("/api/v1/carts/**", "/api/v1/cartItems/**", "/api/v1/users/**");
 //    , "/api/v1/users/**"
 
     @Bean
@@ -54,7 +51,6 @@ public class ShopConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-
     }
 
     @Bean
