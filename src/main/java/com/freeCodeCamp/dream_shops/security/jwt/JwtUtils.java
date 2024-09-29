@@ -40,12 +40,12 @@ public class JwtUtils {
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(key()).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key()).build().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
                  IllegalArgumentException e) {
